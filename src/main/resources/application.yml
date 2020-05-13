@@ -1,0 +1,26 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /app
+  tomcat:
+    uri-encoding: UTF-8
+web:
+  upload-path: D:/temp/file/
+
+TcpServer:
+  ip:   192.168.71.11
+  port: 9999
+
+WebSocketServer:
+  ip:   192.168.71.11
+  port: 8888
+  sockPath: /websocket
+
+UdpServer:
+  port: 9726
+
+spring:
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
