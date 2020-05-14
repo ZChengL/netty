@@ -8,11 +8,11 @@ web:
   upload-path: D:/temp/file/
 
 TcpServer:
-  ip:   192.168.71.11
+  ip:   127.0.0.1
   port: 9999
 
 WebSocketServer:
-  ip:   192.168.71.11
+  ip:   127.0.0.1
   port: 8888
   sockPath: /websocket
 
