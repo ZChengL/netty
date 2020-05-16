@@ -2,6 +2,7 @@ package com.cof.server;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,7 +13,7 @@ import org.apache.logging.log4j.Logger;
  * @since 2020.05.08
  * 监听来自tcp客户端的消息，并进行消息转发
  */
-
+@Slf4j
 public class TcpServerHandler extends SimpleChannelInboundHandler<Object> {
 
     public Logger logger = LogManager.getLogger("【TcpServerHandler】"+ TcpServerHandler.class.getName());
@@ -24,13 +25,13 @@ public class TcpServerHandler extends SimpleChannelInboundHandler<Object> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg.equals("01")){
-            System.out.println("receive command ：" + msg);
+            log.info("receive command ：" + msg);
             ctx.channel().writeAndFlush("command 01 executed!\n");
         }else if(msg.equals("02")){
-            System.out.println("receive command ：" + msg);
+            log.info("receive command ：" + msg);
             ctx.channel().writeAndFlush("command 02 executed!\n");
         }else {
-            System.out.println("unknown command：" + msg);
+            log.info("unknown command：" + msg);
             ctx.channel().writeAndFlush("unknown command!\n");
         }
     }

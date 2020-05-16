@@ -1,5 +1,6 @@
 package com.cof.client;
 
+import com.cof.util.CommonUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -19,8 +20,10 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Scanner;
 
 /**
  * @author lilongke
@@ -42,7 +45,7 @@ public class UdpClient {
                         @Override
                         protected void initChannel(NioDatagramChannel ch) throws Exception {
                             ch.pipeline().addLast(new UdpClientHandler());
-                            ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO));
+                            //ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO));
                         }
                     });
 
@@ -54,19 +57,24 @@ public class UdpClient {
 
     }
 
-    public void send(String ip, int port) {
-        channel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer("abcdefg", CharsetUtil.UTF_8), new InetSocketAddress(ip, port)));
+    public void send(String ip, int port, String msg) {
+        CommonUtil.cyclicBarrier();
+        channel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(msg, CharsetUtil.UTF_8), new InetSocketAddress(ip, port)));
     }
 
-    public static void main(String []args) throws InterruptedException, IOException {
+    public  void main(String []args) throws InterruptedException, IOException {
         UdpClient client = new UdpClient();
         Map<String, Object> ymlMap = getYmlMap();
         int port = Integer.valueOf(((Map<String, Object>) ymlMap.get("UdpServer")).get("port").toString());
         client.init("127.0.0.1", port);
-
+//        client.send("127.0.0.1", port);
         while (true) {
-            client.send("127.0.0.1", port);
-            Thread.sleep(2000);
+            System.out.println("请输入：");
+            Scanner scanner = new Scanner(System.in);
+            String s = scanner.nextLine();
+            ByteBuffer buffer = ByteBuffer.wrap(s.getBytes());
+            client.send("127.0.0.1", port, s);
+//            Thread.sleep(2000);
         }
     }
 

@@ -7,6 +7,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
+import java.util.Scanner;
+
 /**
  * @author lilongke
  * @ClassName TcpClient
@@ -35,6 +37,7 @@ public class TcpClient {
                 pipeline.addLast("handler", new TcpClientHandler());
             }
         });
+        //ChannelOption.RCVBUF_ALLOCATOR
         b.option(ChannelOption.SO_KEEPALIVE, true);
         return b;
     }
@@ -53,12 +56,18 @@ public class TcpClient {
 
     /**
         * 发送信息
-        * @param [msg]
+        * @param
         * @return void
         */
     public static void sendMsg(String msg) throws Exception {
         if (channel != null) {
-            channel.writeAndFlush(msg).sync();
+            while(true){
+                System.out.println("输入消息：");
+                Scanner scanner = new Scanner(System.in);
+                String s= scanner.nextLine();
+                channel.writeAndFlush(s ).sync();
+            }
+
         } else {
             System.out.println("Msg Send Failed , Connection Lost!");
         }

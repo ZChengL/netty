@@ -7,6 +7,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.concurrent.EventExecutorGroup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class UdpServer {
     /** 用于分配处理业务线程的线程组个数 */
     protected static final int BIZGROUPSIZE = Runtime.getRuntime().availableProcessors() * 2;
     private static final EventLoopGroup bossGroup = new NioEventLoopGroup(BIZGROUPSIZE);
+    //EventExecutorGroup executors = new EventExecutorGroup();
     /**
      * SpringBoot项目启动后, 自动启动Udp Netty服务端
      */
@@ -55,6 +57,8 @@ public class UdpServer {
                                 .channel(NioDatagramChannel.class)
                                 .localAddress(PORT)
 //                                .option(ChannelOption.SO_BROADCAST, true)
+                                //由于UDP是无会话的，所以只有一个线程可以在一个UDP端口上接收数据并对其进行解码。
+                                //创建NioDatagramChannelFactory时可以指定的池的线程仅当您在多个端口上侦听数据时使用。每个端口只有一个线程有意义。即使您在该构造函数中指定了100个工作程序，也只会使用一个，如果您配置了一个UDP端口。
                                 .handler(new ChannelInitializer<NioDatagramChannel>() {
 
                                     @Override
